@@ -20,7 +20,7 @@ add_action('pre_get_posts', function ($query) {
     }
 });
 
-// Register custom query var
+// Register custom query vars
 add_filter('query_vars', function ($vars) {
     if (!in_array('category', $vars, true)) {
         $vars[] = 'category';

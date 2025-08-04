@@ -69,70 +69,29 @@
         </div>
 
         <div class="offcanvas-body">
-            <ul
-                class="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0">
-                <li class="nav-item border-dashed active">
-                    <a
-                        href="<?php echo home_url('/'); ?>/?category=fruits-veges"
-                        class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-                        <svg width="24" height="24" viewBox="0 0 24 24">
-                            <use xlink:href="<?php echo get_template_directory_uri(); ?>/assets/images/icons.svg#fruits"></use>
-                        </svg>
-                        <span>Fruits and vegetables</span>
-                    </a>
-                </li>
-                <li class="nav-item border-dashed">
-                    <a
-                        href="<?php echo home_url('/'); ?>/?category=meat-poultry"
-                        class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-                        <svg width="24" height="24" viewBox="0 0 24 24">
-                            <use xlink:href="<?php echo get_template_directory_uri(); ?>/assets/images/icons.svg#meat"></use>
-                        </svg>
-                        <span>Meat and Poultry</span>
-                    </a>
-                </li>
-                <li class="nav-item border-dashed">
-                    <a
-                        href="<?php echo home_url('/'); ?>/?category=bread-bakery"
-                        class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-                        <svg width="24" height="24" viewBox="0 0 24 24">
-                            <use xlink:href="<?php echo get_template_directory_uri(); ?>/assets/images/icons.svg#bakery"></use>
-                        </svg>
-                        <span>Bakery and Bread</span>
-                    </a>
-                </li>
-                <li class="nav-item border-dashed">
-                    <button
-                        class="btn btn-toggle dropdown-toggle position-relative w-100 d-flex justify-content-between align-items-center text-dark p-2"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#beverages-collapse"
-                        aria-expanded="false">
-                        <div class="d-flex gap-3">
+            <?php
+            $all_categories = get_terms([
+                'taxonomy' => 'product_cat',
+                'hide_empty' => true
+            ]);
+            ?>
+            <ul class="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0">
+                <?php foreach ($all_categories as $category): ?>
+                    <li class="nav-item border-dashed active">
+                        <a
+                            href="<?php echo home_url('/'); ?>?category=<?php echo esc_attr($category->slug); ?>"
+                            class="nav-link d-flex align-items-center gap-3 text-dark p-2">
                             <svg width="24" height="24" viewBox="0 0 24 24">
-                                <use xlink:href="<?php echo get_template_directory_uri(); ?>/assets/images/icons.svg#beverages"></use>
+
+                                <use xlink:href="<?php echo get_template_directory_uri(); ?>/assets/images/icons.svg#<?php echo esc_attr($category->slug); ?>"></use>
                             </svg>
-                            <span>Beverages</span>
-                        </div>
-                    </button>
-                    <div class="collapse" id="beverages-collapse">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal ps-5 pb-1">
-                            <li class="border-bottom py-2">
-                                <a href="<?php echo home_url('/'); ?>/?category=beverage-water"
-                                    class="dropdown-item">Water</a>
-                            </li>
-                            <li class="border-bottom py-2">
-                                <a href="<?php echo home_url('/'); ?>/?category=beverage-juice"
-                                    class="dropdown-item">Juice</a>
-                            </li>
-                            <li class="border-bottom py-2">
-                                <a href="<?php echo home_url('/'); ?>/?category=beverage-soda"
-                                    class="dropdown-item">Soda</a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
+                            <span><?php echo esc_html($category->name); ?></span>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
             </ul>
         </div>
+
     </div>
 
     <header>
