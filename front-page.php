@@ -68,30 +68,9 @@
                 aria-label="Close"></button>
         </div>
 
-        <div class="offcanvas-body">
-            <?php
-            $all_categories = get_terms([
-                'taxonomy' => 'product_cat',
-                'hide_empty' => true
-            ]);
-            ?>
-            <ul class="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0">
-                <?php foreach ($all_categories as $category): ?>
-                    <li class="nav-item border-dashed active">
-                        <a
-                            href="<?php echo home_url('/'); ?>?category=<?php echo esc_attr($category->slug); ?>"
-                            class="nav-link d-flex align-items-center gap-3 text-dark p-2">
-                            <svg width="24" height="24" viewBox="0 0 24 24">
-
-                                <use xlink:href="<?php echo get_template_directory_uri(); ?>/assets/images/icons.svg#<?php echo esc_attr($category->slug); ?>"></use>
-                            </svg>
-                            <span><?php echo esc_html($category->name); ?></span>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-
+        <?php
+        echo categories_html();
+        ?>
     </div>
 
     <header>
@@ -118,14 +97,6 @@
 
                 <div class="col-sm-6 offset-sm-2 offset-md-0 col-lg-4">
                     <div class="search-bar row bg-light p-2 rounded-4">
-                        <div class="col-md-4 d-none d-md-block">
-                            <select class="form-select border-0 bg-transparent">
-                                <option>All Categories</option>
-                                <option>Groceries</option>
-                                <option>Drinks</option>
-                                <option>Chocolates</option>
-                            </select>
-                        </div>
                         <div class="col-11 col-md-7">
                             <form
                                 id="search-form"
