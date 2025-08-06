@@ -1,6 +1,8 @@
 <?php
 $includes = [
-    'pre-posts.php'
+    'rewrite-rules.php',
+    'pre-posts.php',
+    'render-products-recursive.php'
 ];
 
 foreach ($includes as $file) {
