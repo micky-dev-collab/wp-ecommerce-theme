@@ -55,13 +55,12 @@ function render_products($parent_id = 0, $level = 0, $wrap_in_parent = false, $c
         {
             ob_start(); ?>
     <div class="offcanvas-body">
-        <ul
-            class="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0">
+        <ul class="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0">
             <?php
             render_products();
             ?>
+        </ul>
     </div>
-    </ul>
 <?php
 
             return ob_get_clean();
