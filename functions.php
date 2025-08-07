@@ -2,7 +2,8 @@
 $includes = [
     'rewrite-rules.php',
     'pre-posts.php',
-    'render-products-recursive.php'
+    'render-products-categories.php',
+    'render-products.php'
 ];
 
 foreach ($includes as $file) {
