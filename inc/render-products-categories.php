@@ -9,34 +9,30 @@
  *
  * @param int $parent_id The ID of the parent category to start from. Defaults to 0 for top-level categories.
  */
-function render_products_categories($parent_id = 0)
+function render_categories($parent_id = 0, $level = 0)
 {
-    // Retrieve product categories for the given parent ID.
+    if ($level >= 5) return;
+
     $categories = get_terms([
-        'taxonomy' => 'product_cat',
+        'taxonomy'   => 'product_cat',
         'hide_empty' => true,
-        'parent' => $parent_id
+        'parent'     => $parent_id
     ]);
 
-    // If no categories are found, exit the function.
-    if (empty($categories) || is_wp_error($categories)) {
-        return;
-    }
+    if (is_wp_error($categories) || empty($categories)) return;
 
-    // Loop through each category.
     foreach ($categories as $category) {
-        // Check if the current category has any children.
-        $children = get_terms([
-            'taxonomy' => 'product_cat',
+        // Output category
+        $child_categories = get_terms([
+            'taxonomy'   => 'product_cat',
             'hide_empty' => true,
-            'parent' => $category->term_id
+            'parent'     => $category->term_id
         ]);
 
-        $has_children = !empty($children) && !is_wp_error($children);
+        $has_children = !empty($child_categories) && !is_wp_error($child_categories);
 
-        // Conditional rendering based on whether the category has children.
-        if ($has_children) : ?>
-            <!-- This block is for parent categories that have children -->
+        if ($has_children) {
+?>
             <li class="nav-item border-dashed">
                 <button
                     class="btn btn-toggle dropdown-toggle position-relative w-100 d-flex justify-content-between align-items-center text-dark p-2"
@@ -51,14 +47,14 @@ function render_products_categories($parent_id = 0)
                     </div>
                 </button>
                 <div class="collapse" id="collapse-<?php echo esc_attr($category->slug); ?>">
-                    <!-- Recursive call to render the child categories -->
                     <ul class="btn-toggle-nav list-unstyled fw-normal ps-5 pb-1">
-                        <?php render_products_categories($category->term_id); ?>
+                        <?php render_categories($category->term_id, $level + 1); ?>
                     </ul>
                 </div>
             </li>
-        <?php else : ?>
-            <!-- This block is for categories that do not have children -->
+        <?php
+        } else {
+        ?>
             <li class="nav-item border-dashed active">
                 <a href="<?php echo home_url('/'); ?>?category=<?php echo esc_attr($category->slug); ?>"
                     class="nav-link d-flex align-items-center gap-3 text-dark p-2">
@@ -68,9 +64,11 @@ function render_products_categories($parent_id = 0)
                     <span><?php echo esc_html($category->name); ?></span>
                 </a>
             </li>
-    <?php endif;
+    <?php
+        }
     }
 }
+
 
 /**
  * Wraps the product categories list in a container using output buffering.
@@ -83,7 +81,7 @@ function categories_html()
     ob_start(); ?>
     <div class="offcanvas-body">
         <ul class="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0">
-            <?php render_products_categories(); ?>
+            <?php render_categories(); ?>
         </ul>
     </div>
 <?php
