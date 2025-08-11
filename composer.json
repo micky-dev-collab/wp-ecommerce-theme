@@ -1,0 +1,5 @@
+{
+    "require-dev": {
+        "vestaware/svg-sprite-generator": "^1.0"
+    }
+}

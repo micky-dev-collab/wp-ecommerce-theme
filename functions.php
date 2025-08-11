@@ -3,7 +3,8 @@ $includes = [
     'rewrite-rules.php',
     'pre-posts.php',
     'render-products-categories.php',
-    'render-products.php'
+    'render-products.php',
+    'get-icon-helper.php'
 ];
 
 foreach ($includes as $file) {

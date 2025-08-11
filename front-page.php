@@ -89,9 +89,7 @@
                         data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvasNavbar"
                         aria-controls="offcanvasNavbar">
-                        <svg width="24" height="24" viewBox="0 0 24 24">
-                            <use xlink:href="<?php echo get_template_directory_uri(); ?>/assets/images/icons.svg#menu"></use>
-                        </svg>
+                        <?php echo get_icon('icon1') ?>
                     </button>
                 </div>
 

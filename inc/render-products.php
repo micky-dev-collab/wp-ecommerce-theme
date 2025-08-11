@@ -58,7 +58,16 @@ function render_product_discount($regular_price, $sale_price)
         $discount = $regular_price - $sale_price;
         $discount_percentage = ($discount / $regular_price) * 100;
         // Return the rounded percentage inside parentheses.
-        return '(' . round($discount_percentage) . '%)';
+        ob_start();
+    ?>
+        <span
+            class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">
+            <?php
+            echo round($discount_percentage) . '% OFF';
+            ?>
+        </span>
+    <?php
+        return ob_get_clean();
     }
 
     // Return an empty string if there's no sale or the prices are invalid.
@@ -117,9 +126,7 @@ function insert_product($product)
             <!-- Displaying the current price (sale or regular) -->
             <span class="text-dark fw-semibold"><?php echo wc_price($product->get_price()); ?></span>
             <!-- Calling the completed discount function -->
-            <span class="badge border fw-normal px-1 fs-7 lh-1 text-body-tertiary">
-                <?php echo render_product_discount($product->get_regular_price(), $product->get_sale_price()); ?>
-            </span>
+            <?php echo render_product_discount($product->get_regular_price(), $product->get_sale_price()); ?>
         </div>
         <div class="button-area p-3 pt-0">
             <div class="row g-1 mt-2">
