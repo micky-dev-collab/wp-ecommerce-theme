@@ -1,11 +1,22 @@
 <?php
 function get_sprite_url()
 {
+
     $baseName = 'sprite.svg';
 
-    $manifest_path = get_template_directory() . '/manifest.json';
+    $sprite_path = (get_template_directory() . '/assets/icons/sprite/sprite.svg');
 
-    if (! is_file($manifest_path)) return;
+    $manifest_path = get_template_directory() . '/assets/icons/sprite/manifest.json';
+
+
+    if (! is_file($manifest_path)) {
+
+        if (! file_exists($sprite_path)) return;
+
+        $version = filemtime($sprite_path);
+
+        return get_template_directory_uri() . '/assets/icons/sprite/sprite.svg?v=' . $version;
+    };
 
     $contents = json_decode(file_get_contents($manifest_path), true);
 

@@ -14,7 +14,7 @@ function generate_sprite()
         $srcDir,
         $distDir,
         'sprite.svg',
-        'manifest.json',
+        $distDir . '/manifest.json',
         removeFill: true
     );
 
