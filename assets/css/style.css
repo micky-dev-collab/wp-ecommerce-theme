@@ -691,3 +691,7 @@ a.btn-link.text-light:after {
 }
 
 /* ============ mobile view .end// ============ */
+
+svg {
+  vertical-align: middle !important;
+}

@@ -9,6 +9,8 @@
  *
  * @param int $parent_id The ID of the parent category to start from. Defaults to 0 for top-level categories.
  */
+
+
 function render_categories($parent_id = 0, $level = 0)
 {
     if ($level >= 5) return;
@@ -22,6 +24,7 @@ function render_categories($parent_id = 0, $level = 0)
     if (is_wp_error($categories) || empty($categories)) return;
 
     foreach ($categories as $category) {
+
         // Output category
         $child_categories = get_terms([
             'taxonomy'   => 'product_cat',

@@ -1,9 +1,9 @@
 <?php
 
 /**
- * WooCommerce Product Template Functions
+ * WooCommerce Product Rendering Functions.
  *
- * This file contains functions for rendering product information on the frontend.
+ * This file contains template functions for displaying product information on the frontend.
  */
 
 // You can keep this for debugging if you need to inspect the query object.
@@ -12,18 +12,20 @@
 
 
 /**
- * Renders a list of products in a loop.
+ * Renders a list of products in a WordPress loop.
  *
- * @param string $render_section A string to determine the rendering context (e.g., 'featured-section').
+ * @param string $render_section Defines the HTML wrapper for the product item (e.g., 'swiper-slide' or a grid column).
+ * @param int $discount_filter Optional. The minimum discount percentage a product must have to be displayed. Defaults to 0 (no filter).
  */
-function render_products($render_section)
+function render_products($render_section, $discount_filter = 0)
 {
     while (have_posts()) {
         the_post();
 
         $product = wc_get_product(get_the_ID());
+
 ?>
-        <?php if ($render_section === 'featured-section'): ?>
+        <?php if ($render_section === 'swiper-slide'): ?>
             <div class="product-item swiper-slide">
                 <?php
                 echo insert_product($product);
@@ -45,11 +47,38 @@ function render_products($render_section)
 
 
 /**
- * Calculates and returns the discount percentage for a product on sale.
+ * Checks if a product's discount meets a specific percentage threshold.
+ *
+ * @param WC_Product $product The WooCommerce product object.
+ * @param int $discount_filter The minimum required discount percentage.
+ * @return bool True if the product's discount is equal to or greater than the filter, or if the filter is 0. False otherwise.
+ */
+function is_discount($product, $discount_filter)
+{
+    if ($discount_filter === 0) return true;
+
+    if (! $product->is_on_sale()) return false;
+
+    $regular_price = (float) $product->get_regular_price();
+
+    $sale_price = (float)$product->get_sale_price();
+
+    $discount = $regular_price - $sale_price;
+
+    if ($regular_price <= 0) return false;
+
+    $discount_percentage = ($discount / $regular_price) * 100;
+
+    return $discount_percentage >= $discount_filter;
+}
+
+
+/**
+ * Calculates the percentage discount and returns it as a formatted HTML badge.
  *
  * @param float|string $regular_price The product's regular price.
  * @param float|string $sale_price The product's sale price.
- * @return string The formatted discount percentage, e.g., "(20%)", or an empty string.
+ * @return string The HTML for a discount badge (e.g., '20% OFF') or an empty string if there's no sale.
  */
 function render_product_discount($regular_price, $sale_price)
 {
@@ -57,7 +86,7 @@ function render_product_discount($regular_price, $sale_price)
     if (!empty($regular_price) && !empty($sale_price) && $regular_price > $sale_price) {
         $discount = $regular_price - $sale_price;
         $discount_percentage = ($discount / $regular_price) * 100;
-        // Return the rounded percentage inside parentheses.
+        // Start output buffering to capture the HTML badge.
         ob_start();
     ?>
         <span
@@ -76,10 +105,10 @@ function render_product_discount($regular_price, $sale_price)
 
 
 /**
- * Renders the HTML for a single product.
+ * Generates and returns the complete HTML markup for a single product card.
  *
  * @param WC_Product $product The WooCommerce product object.
- * @return string The rendered HTML content.
+ * @return string The HTML content of the product card.
  */
 function insert_product($product)
 {
@@ -87,9 +116,7 @@ function insert_product($product)
     ob_start();
     ?>
     <figure>
-        <!-- Using get_permalink() to link to the actual product page -->
         <a href="<?php echo $product->get_permalink(); ?>" title="<?php echo $product->get_name() ?>">
-            <!-- Using get_image_id() for the product image -->
             <img
                 src="<?php echo wp_get_attachment_url($product->get_image_id()); ?>"
                 alt="Product Thumbnail"
@@ -99,7 +126,6 @@ function insert_product($product)
     <div class="d-flex flex-column text-center">
         <h3 class="fs-6 fw-normal"><?php echo $product->get_name(); ?></h3>
         <div>
-            <!-- This rating section is static, you would need a more complex function to render dynamic ratings. -->
             <span class="rating">
                 <svg width="18" height="18" class="text-warning">
                     <use xlink:href="#star-full"></use>
@@ -117,15 +143,11 @@ function insert_product($product)
                     <use xlink:href="#star-half"></use>
                 </svg>
             </span>
-            <!-- Displaying the stock quantity -->
             <span><?php echo $product->get_stock_quantity(); ?></span>
         </div>
         <div class="d-flex justify-content-center align-items-center gap-2">
-            <!-- Displaying the regular price with a strikethrough if a sale price exists -->
             <del><?php if ($product->get_sale_price()) echo wc_price($product->get_regular_price()); ?></del>
-            <!-- Displaying the current price (sale or regular) -->
             <span class="text-dark fw-semibold"><?php echo wc_price($product->get_price()); ?></span>
-            <!-- Calling the completed discount function -->
             <?php echo render_product_discount($product->get_regular_price(), $product->get_sale_price()); ?>
         </div>
         <div class="button-area p-3 pt-0">
@@ -142,20 +164,15 @@ function insert_product($product)
                     <a
                         href="<?php echo $product->add_to_cart_url(); ?>"
                         class="btn btn-primary rounded-1 p-2 fs-7 btn-cart">
-                        <svg width="18" height="18">
-                            <use xlink:href="#cart"></use>
-                        </svg>
+                        <?php echo get_icon('cart', $fill = 'white'); ?>
                         Add to Cart
                     </a>
                 </div>
                 <div class="col-2">
-                    <!-- This link for adding to wishlist is static and would need to be implemented -->
                     <a
                         href="#"
-                        class="btn btn-outline-dark rounded-1 p-2 fs-6">
-                        <svg width="18" height="18">
-                            <use xlink:href="#heart"></use>
-                        </svg>
+                        class="btn btn-outline rounded-1 p-2 fs-6">
+                        <?php echo get_icon('heart', $fill = 'white', $stroke = 'white'); ?>
                     </a>
                 </div>
             </div>
